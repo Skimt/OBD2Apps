@@ -1,0 +1,227 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f5f9fc;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    flex: 1;
+}
+
+.h1, h1 {
+    font-size: 1.8rem;
+    line-height: 2;
+}
+.h5, h5 {
+    font-size: 1.25rem;
+    line-height: 2;
+}
+
+@keyframes blurIn {
+    from {
+        filter: blur(0px);
+    }
+
+    to {
+        filter: blur(20px);
+    }
+}
+
+.sidebar {
+    background-image: linear-gradient(180deg, rgb(35, 52, 82) 0%, rgb(76, 99, 113) 70%);
+    position: relative;
+    z-index: 2;
+}
+
+    .sidebar .top-row {
+        background-color: #374862;
+    }
+
+    .sidebar .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .sidebar .oi {
+        width: 2rem;
+        font-size: 1.1rem;
+        vertical-align: text-top;
+        top: -2px;
+    }
+
+    .sidebar .nav-item {
+        font-size: 0.9rem;
+        padding-bottom: 0.5rem;
+    }
+
+        .sidebar .nav-item:first-of-type {
+            padding-top: 1rem;
+        }
+
+        .sidebar .nav-item:last-of-type {
+            padding-bottom: 1rem;
+        }
+
+        .sidebar .nav-item a {
+            color: #d7d7d7;
+            border-radius: 4px;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            line-height: 3rem;
+        }
+
+            .sidebar .nav-item a.active {
+                background-color: rgba(255,255,255,0.25);
+                color: white;
+            }
+
+            .sidebar .nav-item a:hover {
+                background-color: rgba(255,255,255,0.1);
+                color: white;
+            }
+
+.content {
+    padding-top: 1.6rem;
+    z-index: 2;
+    position: relative;
+}
+
+.navbar-toggler {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    app {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .main > div {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    .sidebar .collapse {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+    }
+}
+
+/* Animate */
+.card,
+.modal {
+    display: block;
+    animation: fadeIn 0.6s;
+}
+
+.card {
+    background-color: rgba(255,255,255,.8);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Table edit */
+.table-edit {
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+/* Modal fix for blazor system */
+.modal-backdrop {
+    background-color: rgba(0,0,0,.85);
+}
+.modal {
+    display: block;
+}
+
+.btn-block + .btn-block {
+    margin-top: 0 !important; 
+}
+
+/* Open Iconic fix */
+.oi {
+    margin-right: -1px;
+    margin-left: 1px;
+}
+.oi-plus {
+    font-size: 0.8em;
+}
+
+/* Fix dropdown autocomplete select */
+.list-group.autocomplete {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    padding-right: .7rem;
+}
+.list-group-item-action {
+    cursor: pointer;
+}
+/* Fix button group pagination */
+.btn-secondary:not(:disabled):not(.disabled).active:focus, 
+.btn-secondary:not(:disabled):not(.disabled):active:focus, 
+.show > .btn-secondary.dropdown-toggle:focus {
+    box-shadow: none;
+}

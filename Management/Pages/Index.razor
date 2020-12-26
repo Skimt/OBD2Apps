@@ -1,0 +1,176 @@
+﻿@page "/"
+
+@using Management.Data
+@using Management.Models
+@using Management.Services
+@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.ChartJS.LineChart
+@using ChartJs.Blazor.ChartJS.Common.Time
+@using System.Drawing
+
+@inject ChartService ChartService
+@inject SessionService SessionService
+@inject CarService CarService
+@inject LogEntryService LogEntryService
+
+<h1>Dashboard</h1>
+
+<div class="row mb-4">
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Last session</h5>
+				<table class="table">
+					<tbody>
+						@if (car == null)
+						{
+							<tr>
+								<th colspan="4">Loading</th>
+							</tr>
+						}
+						else
+						{
+							<tr>
+								<th>Car</th>
+								<td>@(car.CarBrand?.Name + " " + car.CarModel?.Name + " " + car.Volume?.ToString() + " " + car.Year?.Year.ToString())</td>
+								<th>Owner</th>
+								<td>@car.Person?.FullName</td>
+							</tr>
+						}
+						<tr>
+							<th>Date</th>
+							<td>@sessionStart.ToString("yyyy-MM-dd")</td>
+							<th>Time</th>
+							<td class="text-left">@sessionTotalTime</td>
+						</tr>
+						<tr>
+							<th>Start</th>
+							<td class="text-left">@sessionStart.ToString("HH:mm:ss")</td>
+							<th>End</th>
+							<td class="text-left">@sessionEnd.ToString("HH:mm:ss")</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row mb-4">
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Speed</h5>
+				<ChartJsLineChart @ref="kphChart" Config="@kphConfig" />
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">RPM</h5>
+				<ChartJsLineChart @ref="rpmChart" Config="@rpmConfig" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row mb-4">
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Temperature</h5>
+				<ChartJsLineChart @ref="temperatureChart" Config="@temperatureConfig" />
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Pressure</h5>
+				<ChartJsLineChart @ref="kpaChart" Config="@kpaConfig" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row mb-4">
+	<div class="col">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">Percent</h5>
+				<ChartJsLineChart @ref="percentChart" Config="@percentConfig" />
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+
+	private ChartJsLineChart percentChart;
+	private ChartJsLineChart temperatureChart;
+	private ChartJsLineChart rpmChart;
+	private ChartJsLineChart kpaChart;
+	private ChartJsLineChart kphChart;
+
+	private LineConfig percentConfig;
+	private LineConfig temperatureConfig;
+	private LineConfig rpmConfig;
+	private LineConfig kpaConfig;
+	private LineConfig kphConfig;
+
+	private Session session;
+	private Car car;
+	
+	private DateTime sessionStart;
+	private DateTime sessionEnd;
+	private string sessionTotalTime { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+
+		// Retrieve configurations.
+		percentConfig = await ChartService.GetLineConfig();
+		temperatureConfig = await ChartService.GetLineConfig();
+		kphConfig = await ChartService.GetLineConfig();
+		rpmConfig = await ChartService.GetLineConfig();
+		kpaConfig = await ChartService.GetLineConfig();
+
+		// Retrieve the latest session in the database.
+		session = await SessionService.GetLastSession();
+
+		// Setup data.
+		await AddToChart(rpmConfig, "RPM", "0C", Color.Magenta);
+		await AddToChart(kphConfig, "Speed", "0D", Color.Firebrick);
+		await AddToChart(temperatureConfig, "Intake air", "0F", Color.MediumAquamarine);
+		await AddToChart(temperatureConfig, "Engine coolant", "04", Color.DarkSalmon);
+		await AddToChart(percentConfig, "Engine Load", "05", Color.Orange);
+		await AddToChart(percentConfig, "Commanded EGR", "2C", Color.DarkSalmon);
+		await AddToChart(percentConfig, "EGR Error", "2D", Color.Firebrick);
+		await AddToChart(kpaConfig, "Absolute Barometric Pressure", "33", Color.Indigo);
+
+		// Setup car.
+		car = (await CarService.GetCar(session.CarId)).Value;
+
+	}
+
+	private async Task AddToChart(LineConfig config, string title, string pid, Color color)
+	{
+
+		LineDataset<TimeTuple<float>> dataSet = await ChartService.GetLineData(title, color);
+		IEnumerable<LogEntry> data = (await LogEntryService.GetLogEntries(session.SessionId, pid)).Value;
+		dataSet.AddRange(data.Select(entry => new TimeTuple<float>(new Moment(entry.Date ?? DateTime.Now), entry.Value ?? 0)));
+		config.Data.Datasets.Add(dataSet);
+
+		// Instead of getting more data from the database, simply calculate from one of the preexisting data collected. In this case from the RPM data.
+		if (title == "RPM")
+		{
+			sessionStart = data.FirstOrDefault().Date ?? DateTime.Now;
+			sessionEnd = data.LastOrDefault().Date ?? DateTime.Now;
+			TimeSpan sessionTotal = (sessionEnd - sessionStart);
+			sessionTotalTime = String.Format("{0}:{1}:{2}", sessionTotal.Hours.ToString("D2"), sessionTotal.Minutes.ToString("D2"), sessionTotal.Seconds.ToString("D2"));
+		}
+
+	}
+
+}

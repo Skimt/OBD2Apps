@@ -1,0 +1,93 @@
+﻿@page "/config"
+
+@using Management.Models
+@using Management.Services
+@inject CarService CarService
+@inject ConfigurationService ConfigService
+
+<h1>Configuration</h1>
+
+@if (config == null)
+{
+	<Loading />
+}
+else
+{
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card">
+				<div class="card-body">
+
+					<div class="form-group">
+						<label>Car (Id: @config.CarId)</label>
+						<select class="form-control" @bind="CarId">
+							@if (cars == null)
+							{
+								<Loading />
+							}
+							else
+							{
+								@foreach (Car car in cars)
+								{
+									<option value="@car.CarId">@car.LicensePlate</option>
+								}
+
+							}
+						</select>
+					</div>
+					<div class="form-group form-check">
+						<input type="checkbox" class="form-check-input" @bind="IsLoggingToDb">
+						<label class="form-check-label">Logging to DB?</label>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+}
+
+@code {
+
+
+	private IEnumerable<Car> cars;
+	private Models.Configuration config;
+
+	protected override async Task OnInitializedAsync()
+	{
+
+		config = (await ConfigService.GetConfig()).Value;
+
+		if (config != null)
+		{
+			cars = (await CarService.GetCars()).Value;
+		}
+
+	}
+
+	public int CarId
+	{
+		get { return config.CarId; }
+		set
+		{
+			config.CarId = value;
+			Save();
+		}
+	}
+
+	public bool IsLoggingToDb
+	{
+		get { return config.IsLoggingToDb; }
+		set
+		{
+			config.IsLoggingToDb = value;
+			Save();
+		}
+	}
+
+	private async void Save()
+	{
+		await ConfigService.PutConfig(config);
+	}
+
+}

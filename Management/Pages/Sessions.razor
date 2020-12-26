@@ -1,0 +1,105 @@
+﻿@page "/sessions"
+@page "/sessions/{CarId:int}"
+
+@using Management.Data
+@using Management.Models
+@using Management.Services
+@using Management.Modals.Session
+@using Management.Pages.Inherited
+@inherits ManagementBase
+@inject SessionService SessionService
+
+<h1>Sessions</h1>
+
+@if (sessions == null)
+{
+	<Loading />
+}
+else
+{
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card">
+				<div class="card-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Hour</th>
+								<th>Entries</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (Session session in sessions)
+							{
+								<tr>
+									<td>
+										@if (session.DateStart.HasValue)
+										{
+											@(
+												session.DateStart.Value.Year.ToString() + "-" + 
+												session.DateStart.Value.Month.ToString("D2") + "-" + 
+												session.DateStart.Value.Day.ToString("D2")
+											)
+										}
+									</td>
+									<td>
+										@if (session.DateStart.HasValue)
+										{ 
+											@(
+												session.DateStart.Value.Hour.ToString("D2") + ":" +
+												session.DateStart.Value.Second.ToString("D2")
+											)
+										}
+									</td>
+									<td class="table-edit p-0 text-right">
+										<button id="btnDelete" class="btn btn-sm btn-danger" @onclick="(()=> BtnDelete_OnClick(session))"><span class="oi oi-trash"></span></button>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+					<div class="row">
+						<div class="col text-center">
+
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<CascadingValue Value="this">
+		<Delete />
+	</CascadingValue>
+
+}
+
+@code {
+
+	[Parameter]
+	public int CarId { get; set; }
+
+	IEnumerable<Session> sessions;
+	public Session Session { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Session = new Session();
+		sessions = (await SessionService.GetSessions(CarId)).Value;
+	}
+
+	private void BtnDelete_OnClick(Session session)
+	{
+		Session = SetMarkedAs(session, MarkedType.Delete);
+	}
+
+	public async Task UpdateList()
+	{
+		sessions = (await SessionService.GetSessions(CarId)).Value;
+		StateHasChanged();
+	}
+
+}

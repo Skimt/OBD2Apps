@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="Logging.LoggingForm" Collapsed="true">
+    <Position X="1" Y="0.5" Width="1.5" />
+    <AssociationLine Name="Logger" Type="Logging.Logger" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1" Y="0.875" />
+        <Point X="0.625" Y="0.875" />
+        <Point X="0.625" Y="4.312" />
+        <Point X="1" Y="4.312" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="OBDSql" Type="ELM327.MSSQL.OBDSql" ManuallyRouted="true">
+      <Path>
+        <Point X="2.5" Y="1.05" />
+        <Point X="3.052" Y="1.05" />
+        <Point X="3.052" Y="5.25" />
+        <Point X="4" Y="5.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAQwRAAAECKAAAAAAASAAAAKhAAAAAACAAQAAAAEgEA=</HashCode>
+      <FileName>LoggingForm.Actions.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Browser" />
+      <Property Name="Logger" />
+      <Property Name="ELM327Manager" />
+      <Property Name="OBDSql" />
+      <Property Name="OBDConfig" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Logging.Logger">
+    <Position X="1" Y="3.5" Width="1.5" />
+    <Members>
+      <Method Name="Logger" Hidden="true" />
+      <Method Name="WriteFooter" Hidden="true" />
+      <Method Name="WriteHeader" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAIIAAAAAAIAAAAAgAAEAAAA=</HashCode>
+      <FileName>Logger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logging.Browser">
+    <Position X="1" Y="1.75" Width="1.5" />
+    <Members>
+      <Method Name="Browser" Hidden="true" />
+      <Method Name="EditStyle" Hidden="true" />
+      <Method Name="Hide" Hidden="true" />
+      <Method Name="InsertDocument" Hidden="true" />
+      <Method Name="InsertStylesheet" Hidden="true" />
+      <Method Name="Show" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAACgAAAAAEgAAAAAAAAAEAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Browser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ELM327.ELM327Manager">
+    <Position X="4" Y="0.5" Width="2" />
+    <Members>
+      <Method Name="ELM327Manager" Hidden="true" />
+      <Method Name="GetAssortedCommands" Hidden="true" />
+      <Method Name="GetCommandOfType" Hidden="true" />
+      <Method Name="GetCommandSets" Hidden="true" />
+      <Method Name="SetStorage" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ELM327.MSSQL.OBDSql">
+    <Position X="4" Y="4.25" Width="2" />
+    <Members>
+      <Method Name="OBDSql" Hidden="true" />
+      <Property Name="StoreTotal" Hidden="true" />
+    </Members>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ELM327.MSSQL.OBDConfig">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <Members>
+      <Property Name="ConfigurationId" Hidden="true" />
+      <Method Name="OBDConfig" Hidden="true" />
+    </Members>
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="ELM327.Commands.IDeviceDescription" Collapsed="true">
+    <Position X="6.5" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.ICommand" Collapsed="true">
+    <Position X="4.5" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.IP05EngineLoad" Collapsed="true">
+    <Position X="6.5" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.IP0CEngineRPM" Collapsed="true">
+    <Position X="8.25" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.IP0DVehicleSpeed" Collapsed="true">
+    <Position X="8.25" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.IP0FIntakeAirTemp" Collapsed="true">
+    <Position X="8.25" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.IP2CCommandedEGR" Collapsed="true">
+    <Position X="10" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.IP2DEGRError" Collapsed="true">
+    <Position X="10" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.IP33AbsBarometricPressure" Collapsed="true">
+    <Position X="10" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ELM327.Commands.IP04EngineCoolantTemp" Collapsed="true">
+    <Position X="6.5" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

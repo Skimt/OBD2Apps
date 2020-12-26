@@ -1,0 +1,53 @@
+﻿@using Management.Data
+@using Management.Pages
+@using Management.Services
+@using Management.Models
+
+@namespace Management.Modals.LogEntry
+
+@inject LogEntryService LogEntryService
+
+@if (Page.DisplayDeleteModal)
+{
+	<div class="modal-backdrop">
+		<div id="modalDelete" class="modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Delete PID(s)</h5>
+						<button type="button" class="close" @onclick="BtnAbort_OnClick">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body text-justify">
+						<p>Are you sure you want to permanently delete the selected @Page.logIdDeleteList.Count PID(s) from the database?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-block btn-warning" @onclick="BtnConfirm_OnClick">Yes</button>
+						<button type="button" class="btn btn-block btn-secondary" @onclick="BtnAbort_OnClick">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+
+@code {
+
+	[CascadingParameter]
+	public LogEntries Page { get; set; }
+
+	private async void BtnConfirm_OnClick()
+	{
+		//await LogEntryService.DeleteLogEntry(Page.LogEntry.CarId);
+		Page.DisplayDeleteModal = false;
+		await Page.UpdateList();
+	}
+
+	private void BtnAbort_OnClick()
+	{
+		Page.DisplayDeleteModal = false;
+	}
+
+}

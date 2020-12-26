@@ -1,0 +1,100 @@
+﻿@page "/people"
+
+@using Management.Data
+@using Management.Models
+@using Management.Services
+@using Management.Modals.Person
+@using Management.Pages.Inherited
+@inherits ManagementBase
+@inject PersonService PersonService
+
+<h1>People</h1>
+
+@if (people == null)
+{
+	<Loading />
+}
+else
+{
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card">
+				<div class="card-body">
+					<button id="btnAdd" class="btn btn-primary mb-3 float-right" @onclick="BtnAdd_OnClick"><span class="oi oi-plus"></span> New person</button>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (Person person in people)
+							{
+								<tr>
+									<td>
+										<NavLink class="nav-link" href="@person.PersonUrl">
+											@person.FullName
+										</NavLink>
+									</td>
+									<td class="table-edit p-0 text-right">
+										<button id="btnEdit" class="btn btn-sm btn-success" @onclick="(()=> BtnEdit_OnClick(person))"><span class="oi oi-pencil"></span></button>
+										<button id="btnDelete" class="btn btn-sm btn-danger" @onclick="(()=> BtnDelete_OnClick(person))"><span class="oi oi-trash"></span></button>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+					<div class="row">
+						<div class="col text-center">
+							
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<CascadingValue Value="this">
+		<Add />
+		<Edit />
+		<Delete />
+	</CascadingValue>
+
+}
+
+@code {
+
+	public Person Person { get; set; }
+	IEnumerable<Person> people;
+
+	protected override async Task OnInitializedAsync()
+	{
+		Person = new Person();
+		people = (await PersonService.GetPeople()).Value;
+	}
+
+	private void BtnAdd_OnClick()
+	{
+		Person = SetMarkedAs<Person>(MarkedType.Add);
+	}
+
+	private void BtnEdit_OnClick(Person person)
+	{
+		Person = SetMarkedAs(person, MarkedType.Edit);
+	}
+
+	private void BtnDelete_OnClick(Person person)
+	{
+		Person = SetMarkedAs(person, MarkedType.Delete);
+	}
+
+	public async void UpdateList()
+	{
+		people = (await PersonService.GetPeople()).Value;
+		StateHasChanged();
+	}
+
+}

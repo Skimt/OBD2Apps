@@ -1,0 +1,102 @@
+﻿<div class="btn-toolbar" style="display:block;margin:auto;" role="toolbar">
+	@if (Pages.Length > 0)
+	{
+		@if (Pages[0] != 1)
+		{
+			<div class="btn-group mr-2" role="group">
+				<NavLink class="btn btn-secondary" href="/logentries/1">1</NavLink>
+			</div>
+		}
+		<div class="btn-group mr-2" role="group">
+			@foreach (int page in Pages)
+			{
+				<NavLink class="btn btn-secondary" href="@("/logentries/" + (page).ToString())">@((page).ToString())</NavLink>
+			}
+		</div>
+		@if (CurrentPage + 4 < totalPages)
+		{
+			<div class="btn-group mr-2" role="group">
+				<NavLink class="btn btn-secondary" href="@("/logentries/" + totalPages)">@totalPages.ToString()</NavLink>
+			</div>
+		}
+	}
+</div>
+
+@code {
+
+	[Parameter]
+	public int ItemsTotal { get; set; }
+
+	[Parameter]
+	public int CurrentPage { get; set; } = 1;
+
+	[Parameter]
+	public int MaxRows { get; set; } = 10;
+
+	[Parameter]
+	public int MaxPages { get; set; } = 5;
+
+	private int totalPages;
+	private int startPage;
+	private int endPage;
+	int[] Pages { get; set; }
+
+
+	/// <summary>
+	/// The contents of this OnParametersSetAsync() method was written by
+	/// Jason Watmore @ https://jasonwatmore.com for the Angular framework.
+	/// Changes from original: Start- and EndIndex has been removed, and
+	/// Array.From() has been changed to Enumerable.Range().ToArray().
+	/// </summary>
+	protected override async Task OnParametersSetAsync()
+	{
+
+		// Calculate total pages.
+		totalPages = (int)Math.Ceiling(ItemsTotal / (double)MaxRows);
+
+		// Ensure current page isn't out of range.
+		if (CurrentPage < 1)
+		{
+			CurrentPage = 1;
+		}
+		else if (CurrentPage > totalPages)
+		{
+			CurrentPage = totalPages;
+		}
+
+		if (totalPages <= MaxPages)
+		{
+			// Total pages less than max so show all pages.
+			startPage = 1;
+			endPage = totalPages;
+		}
+		else
+		{
+			// Total pages more than max so calculate start and end pages.
+			int MaxPagesBeforeCurrentPage = (int)Math.Floor(MaxPages / 2d);
+			int MaxPagesAfterCurrentPage = (int)Math.Ceiling(MaxPages / 2d) - 1;
+			if (CurrentPage <= MaxPagesBeforeCurrentPage)
+			{
+				// Current page near the start.
+				startPage = 1;
+				endPage = MaxPages;
+			}
+			else if (CurrentPage + MaxPagesAfterCurrentPage >= totalPages)
+			{
+				// Current page near the end.
+				startPage = totalPages - MaxPages + 1;
+				endPage = totalPages;
+			}
+			else
+			{
+				// Current page somewhere in the middle.
+				startPage = CurrentPage - MaxPagesBeforeCurrentPage;
+				endPage = CurrentPage + MaxPagesAfterCurrentPage;
+			}
+		}
+
+		Pages = await Task.FromResult(Enumerable.Range(startPage, endPage - startPage + 1).ToArray());
+
+	}
+
+}

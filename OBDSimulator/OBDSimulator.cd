@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="OBDSimulator.Program">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Members>
+      <Method Name="Main" Hidden="true" />
+      <Field Name="MILLISECONDS_TIMEOUT" Hidden="true" />
+      <Field Name="tick" Hidden="true" />
+    </Members>
+    <AssociationLine Name="simulators" Type="System.Collections.Generic.List&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1.25" Y="0.5" />
+        <Point X="1.25" Y="0.125" />
+        <Point X="3" Y="0.125" />
+        <Point X="3" Y="0.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AARgAAAAAAAAAAAAAAACAAAIAAAAAAAAAAAKBAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="simulators" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="System.Collections.Generic.List&lt;T&gt;" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="System.Collections.Generic.List&lt;T&gt;.Enumerator" Collapsed="true">
+        <TypeIdentifier />
+        <Lollipop Position="0.2" />
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="OBDSimulator.OBDSimulator">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <Members>
+      <Field Name="assemblyCommands" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="GetCommand" Hidden="true" />
+      <Property Name="IsELM327" Hidden="true" />
+      <Method Name="OBDSimulator" Hidden="true" />
+    </Members>
+    <AssociationLine Name="communicator" Type="OBDSimulator.Communicator" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="3" Y="1.5" />
+        <Point X="3" Y="1.26" />
+        <Point X="4.75" Y="1.26" />
+        <Point X="4.75" Y="1.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAgAADCAAACAAAAAAAAAIAAAAAAgAAAQAAABAAAA=</HashCode>
+      <FileName>OBDSimulator.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="communicator" />
+      <Field Name="port" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OBDSimulator.Communicator">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <Members>
+      <Method Name="Communicator" Hidden="true" />
+      <Property Name="LastReceived" Hidden="true" />
+      <Field Name="OBD" Hidden="true" />
+      <Field Name="sb" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Translator" Type="OBDSimulator.Translator" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.062" Y="1.5" />
+        <Point X="5.062" Y="1.26" />
+        <Point X="6.5" Y="1.26" />
+        <Point X="6.5" Y="1.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAEACAAAAAABAAAABAAAAACAA=</HashCode>
+      <FileName>Communicator.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Translator" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OBDSimulator.Translator">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <Members>
+      <Field Name="PatternWhitespace" Hidden="true" />
+      <Field Name="ran" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>CAAAAAAIAAAQAAAAAAAAAAACAAIAAAAAAAAAACAAQAA=</HashCode>
+      <FileName>Translator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OBDSimulator.Port" Collapsed="true">
+    <Position X="2.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AADAAAAIAAAAIAAKAAAAAAAgAAAAAEAAAEAAAAEAAAA=</HashCode>
+      <FileName>Port.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

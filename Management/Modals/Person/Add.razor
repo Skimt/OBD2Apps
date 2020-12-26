@@ -1,0 +1,70 @@
+﻿@using Management.Pages
+@using Management.Models
+@using Management.Services
+
+@namespace Management.Modals.Person
+
+@inject PersonService PersonService
+
+@if (Display)
+{
+	<div class="modal-backdrop">
+		<div id="modalDelete" class="modal">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add Car</h5>
+						<button type="button" class="close" @onclick="BtnAbort_OnClick">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="needs-validation was-validated" novalidate>
+							<div class="form-row mb-3">
+
+								<div class="col">
+									<label>First name</label>
+									<input type="text" class="form-control" @bind="Page.Person.GivenName" min="2" maxlength="16" pattern="(?!\d)([^\x00-\x7F]|\-|\w){2,16}" required>
+								</div>
+
+								<div class="col">
+									<label>Last name</label>
+									<input type="text" class="form-control" @bind="Page.Person.SurName" min="2" maxlength="16" pattern="(?!\d)([^\x00-\x7F]|\-|\w){2,16}" required>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-block btn-primary" @onclick="BtnConfirm_OnClick">Save</button>
+						<button type="button" class="btn btn-block btn-secondary" @onclick="BtnAbort_OnClick">Abort</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+
+@code {
+
+	[CascadingParameter]
+	public People Page { get; set; }
+
+	public bool Display => Page.Person.Marked == MarkedType.Add;
+
+	private async void BtnConfirm_OnClick()
+	{
+
+		await PersonService.PostPerson(Page.Person);
+		Page.Person.Marked = MarkedType.None;
+		Page.UpdateList();
+
+	}
+
+	private void BtnAbort_OnClick()
+	{
+		Page.Person.Marked = MarkedType.None;
+	}
+
+}

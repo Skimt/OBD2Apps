@@ -1,0 +1,53 @@
+﻿@page "/person/{Id:int}"
+
+@using Management.Data
+@using Management.Models
+@using Management.Services
+@using Management.Modals.Person
+@using Management.Pages.Inherited
+@using Microsoft.AspNetCore.Mvc
+
+@inherits ManagementBase
+@inject PersonService PersonService
+
+@if (Person == null)
+{
+	<h1>Person</h1>
+	<Loading />
+}
+else
+{
+	<h1>@Person.FullName</h1>
+
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card">
+				<div class="card-body">
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+}
+
+@code {
+
+	[Parameter]
+	public int Id { get; set; }
+
+	public Person Person { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Person = new Person();
+		Person = (await PersonService.GetPerson(Id)).Value;
+	}
+
+	public async void UpdateList()
+	{
+		Person = (await PersonService.GetPerson(Id)).Value;
+		StateHasChanged();
+	}
+
+}

@@ -1,0 +1,56 @@
+﻿@using Management.Models
+@using Management.Pages
+@using Management.Services
+
+@namespace Management.Modals.Car
+
+@inject CarService CarService
+
+@if (Display)
+{
+	<div class="modal-backdrop">
+		<div id="modalDelete" class="modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Delete Car</h5>
+						<button type="button" class="close" @onclick="BtnAbort_OnClick">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body text-justify">
+						<p>Are you sure you want to permanently delete the selected '@CarFullName' from the database?</p>
+						<p><i>Deleting a car results in deleting all of the data attached to said car, such as logs.</i></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-block btn-warning" @onclick="BtnConfirm_OnClick">Yes</button>
+						<button type="button" class="btn btn-block btn-secondary" @onclick="BtnAbort_OnClick">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+
+@code {
+
+	[CascadingParameter]
+	public Cars Page { get; set; }
+
+	public bool Display => Page.Car.Marked == MarkedType.Delete;
+	public string CarFullName => Page.Car.CarBrand.Name + " " + Page.Car.CarModel.Name;
+
+	private async void BtnConfirm_OnClick()
+	{
+		await CarService.DeleteCar(Page.Car.CarId);
+		Page.Car.Marked = MarkedType.None;
+		await Page.UpdateList();
+	}
+
+	private void BtnAbort_OnClick()
+	{
+		Page.Car.Marked = MarkedType.None;
+	}
+
+}

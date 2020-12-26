@@ -1,0 +1,209 @@
+﻿@using Management.Models
+@using Management.Pages
+@using Management.Services
+@using System.Text.RegularExpressions
+
+@namespace Management.Modals.Car
+
+@inject CarService CarService
+@inject CarBrandService CarBrandService
+@inject CarModelService CarModelService
+@inject PersonService PersonService
+
+@if (Display)
+{
+	<div class="modal-backdrop">
+		<div id="modalDelete" class="modal">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add Car</h5>
+						<button type="button" class="close" @onclick="BtnAbort_OnClick">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="needs-validation was-validated" novalidate>
+
+
+							<div class="form-row mb-3">
+								<div class="col">
+									<label>License plate</label>
+									<input type="text" class="form-control" @bind="Page.Car.LicensePlate" maxlength="7" pattern="[a-zA-Z0-9]{7}" required>
+								</div>
+							</div>
+
+
+							<div class="form-row mb-3">
+
+								<div class="col">
+									<label>Brand</label>
+									<input type="text" class="form-control" @bind-value="Page.Car.CarBrand.Name" @oninput="@(args => CarBrandName_OnInput(args.Value.ToString()))" min="2" maxlength="16" pattern="[a-zA-Z0-9]{2,16}" required>
+									@if (carBrands != null)
+									{
+										<div class="list-group autocomplete">
+											@foreach (CarBrand brand in carBrands)
+											{
+												<span class="list-group-item list-group-item-action" @onclick="() => SetCarBrand(brand.CarBrandId)">@brand.Name</span>
+											}
+										</div>
+									}
+								</div>
+
+								<div class="col">
+									<label>Model</label>
+									<input type="text" class="form-control" @bind-value="Page.Car.CarModel.Name" @oninput="@(args => CarModelName_OnInput(args.Value.ToString()))" min="2" maxlength="16" pattern="[a-zA-Z0-9]{2,16}" required>
+									@if (carModels != null)
+									{
+										<div class="list-group autocomplete">
+											@foreach (CarModel model in carModels)
+											{
+												<span class="list-group-item list-group-item-action" @onclick="() => SetCarModel(model.CarModelId)">@model.Name</span>
+											}
+										</div>
+									}
+								</div>
+
+							</div>
+							<div class="form-row mb-3">
+
+								<div class="col">
+									<label>Volume</label>
+									<input type="text" class="form-control" @bind="Page.Car.Volume" maxlength="3" pattern="(\d\.\d){1}">
+								</div>
+
+								<div class="col">
+									<label>Year</label>
+									<input type="text" class="form-control" @oninput="@(args => Year_OnInput(args.Value.ToString()))" maxlength="4" pattern="\d{4}">
+								</div>
+
+							</div>
+
+							<div class="form-row mb-3">
+								<div class="col">
+									<label>Owner First Name</label>
+									<input type="text" class="form-control" @bind-value="Page.Car.Person.GivenName" @oninput="@(args => PersonFirstName_OnInput(args.Value.ToString()))" min="2" maxlength="16" pattern="(?!\d)([^\x00-\x7F]|\w){2,16}" required>
+									@if (people != null)
+									{
+										<div class="list-group autocomplete">
+											@foreach (Person person in people)
+											{
+												<button class="list-group-item list-group-item-action" @onclick="() => SetPerson(person.PersonId)">@person.GivenName</button>
+											}
+										</div>
+									}
+								</div>
+								<div class="col">
+									<label>Owner Last Name</label>
+									<input type="text" class="form-control" @bind-value="Page.Car.Person.SurName" @oninput="@(args => PersonLastName_OnInput(args.Value.ToString()))" min="2" maxlength="16" pattern="(?!\d)([^\x00-\x7F]|\w){2,16}" required>
+									@if (people != null)
+									{
+										<div class="list-group autocomplete">
+											@foreach (Person person in people)
+											{
+												<button class="list-group-item list-group-item-action" @onclick="() => SetPerson(person.PersonId)">@person.SurName</button>
+											}
+										</div>
+									}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-block btn-primary" @onclick="BtnConfirm_OnClick">Save</button>
+						<button type="button" class="btn btn-block btn-secondary" @onclick="BtnAbort_OnClick">Abort</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+
+@code {
+
+	public void SetCarBrand(int id)
+	{
+		Page.Car.CarBrand = CarBrandService.GetCarBrand(id);
+		carBrands = new CarBrand[] { };
+		StateHasChanged();
+	}
+
+	public void SetCarModel(int id)
+	{
+		Page.Car.CarModel = CarModelService.GetCarModel(id);
+		carModels = new CarModel[] { };
+		StateHasChanged();
+	}
+
+	public async void SetPerson(int id)
+	{
+		people = new Person[] { };
+		Page.Car.Person = (await PersonService.GetPerson(id)).Value;
+		StateHasChanged();
+	}
+
+	[CascadingParameter]
+	public Cars Page { get; set; }
+
+	public IEnumerable<CarBrand> carBrands;
+	public IEnumerable<CarModel> carModels;
+	public IEnumerable<Person> people;
+	public bool Display => Page.Car.Marked == MarkedType.Add;
+
+	private async void BtnConfirm_OnClick()
+	{
+		await CarService.PostCar(Page.Car);
+		Page.Car.Marked = MarkedType.None;
+		await Page.UpdateList();
+	}
+
+	private void BtnAbort_OnClick()
+	{
+		Page.Car.Marked = MarkedType.None;
+	}
+
+	private async void CarBrandName_OnInput(string value)
+	{
+		carBrands = await CarBrandService.GetCarBrands(value, 4);
+		StateHasChanged();
+	}
+
+	private async void CarModelName_OnInput(string value)
+	{
+		carModels = await CarModelService.GetCarModels(value, 4);
+		StateHasChanged();
+	}
+
+	private async void PersonFirstName_OnInput(string value)
+	{
+		people = await PersonService.GetPeople(value, 4);
+		StateHasChanged();
+	}
+
+	private async void PersonLastName_OnInput(string value)
+	{
+		people = await PersonService.GetPeople(value, 4);
+		StateHasChanged();
+	}
+
+	private readonly Regex Year = new Regex(@"(\d){4}");
+
+	private async void Year_OnInput(string value)
+	{
+
+		Match match = Year.Match(value);
+
+		if (!match.Success)
+		{
+			return;
+		}
+
+		int.TryParse(match.Value, out int year);
+		year = year == 0 ? 1 : year;
+
+		Page.Car.Year = await Task.FromResult(new DateTime(year, 1, 1));
+
+	}
+
+}

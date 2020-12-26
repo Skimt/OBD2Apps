@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6A37FFC7-0244-417C-A0ED-642E3410D656}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ELM327.Commands</RootNamespace>
+    <AssemblyName>ELM327.Commands</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Services\01\P00Support.cs" />
+    <Compile Include="Services\01\P04EngineCoolantTemp.cs" />
+    <Compile Include="Services\01\P05EngineLoad.cs" />
+    <Compile Include="Services\01\P0BIntakeManifoldPressure.cs" />
+    <Compile Include="Services\01\P0CEngineRPM.cs" />
+    <Compile Include="Services\01\P0DVehicleSpeed.cs" />
+    <Compile Include="Services\01\P0FIntakeAirTemp.cs" />
+    <Compile Include="Services\01\P10MAFAirFlowRate.cs" />
+    <Compile Include="Services\01\P11ThrottlePosition.cs" />
+    <Compile Include="Services\01\P1FRuntimeEngineStart.cs" />
+    <Compile Include="Services\01\P20Support.cs" />
+    <Compile Include="Services\01\P23FuelRailGaugePressure.cs" />
+    <Compile Include="Services\01\P24OxygenSensor01.cs" />
+    <Compile Include="Services\01\P25OxygenSensor02.cs" />
+    <Compile Include="Services\01\P2CCommandedEGR.cs" />
+    <Compile Include="Services\01\P2DEGRError.cs" />
+    <Compile Include="Services\01\P2FFuelTankLevel.cs" />
+    <Compile Include="Services\01\P33AbsBarometricPressure.cs" />
+    <Compile Include="Services\01\P40Support.cs" />
+    <Compile Include="Services\01\P46AmbientAirTemp.cs" />
+    <Compile Include="Services\01\P5CEngineOilTemp.cs" />
+    <Compile Include="Services\01\P5EEngineFuelRate.cs" />
+    <Compile Include="Services\01\P60Support.cs" />
+    <Compile Include="Services\01\P80Support.cs" />
+    <Compile Include="Services\01\PA0Support.cs" />
+    <Compile Include="Services\09\VehicleIdentificationNumber.cs" />
+    <Compile Include="Services\AT\DeviceDescription.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="Services\AT\Interfaces\IDeviceDescription.cs" />
+    <Compile Include="Services\01\Interfaces\IP04EngineCoolantTemp.cs" />
+    <Compile Include="Services\01\Interfaces\IP05EngineLoad.cs" />
+    <Compile Include="Services\01\Interfaces\IP0BIntakeManifoldPressure.cs" />
+    <Compile Include="Services\01\Interfaces\IP0CEngineRPM.cs" />
+    <Compile Include="Services\01\Interfaces\IP0DVehicleSpeed.cs" />
+    <Compile Include="Services\01\Interfaces\IP0FIntakeAirTemp.cs" />
+    <Compile Include="Services\01\Interfaces\IP10MAFAirFlowRate.cs" />
+    <Compile Include="Services\01\Interfaces\IP11ThrottlePosition.cs" />
+    <Compile Include="Services\01\Interfaces\IP1FRuntimeEngineStart.cs" />
+    <Compile Include="Services\01\Interfaces\IP23FuelRailGaugePressure.cs" />
+    <Compile Include="Services\01\Interfaces\IP24OxygenSensor01.cs" />
+    <Compile Include="Services\01\Interfaces\IP25OxygenSensor02.cs" />
+    <Compile Include="Services\01\Interfaces\IP2CCommandedEGR.cs" />
+    <Compile Include="Services\01\Interfaces\IP2DEGRError.cs" />
+    <Compile Include="Services\01\Interfaces\IP2FFuelTankLevel.cs" />
+    <Compile Include="Services\01\Interfaces\IP33AbsBarometricPressure.cs" />
+    <Compile Include="Services\01\Interfaces\IP46AmbientAirTemp.cs" />
+    <Compile Include="Services\01\Interfaces\IP5CEngineOilTemp.cs" />
+    <Compile Include="Services\01\Interfaces\IP5EEngineFuelRate.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ELM327Commands.cd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

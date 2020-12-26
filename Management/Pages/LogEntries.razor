@@ -1,0 +1,184 @@
+﻿@page "/logentries"
+@page "/logentries/{CurrentPage:int}"
+
+@using Management.Data
+@using Management.Models
+@using Management.Services
+@using Management.Modals.LogEntry
+@inject NavigationManager NavigationManager
+@inject LogEntryService LogEntryService
+
+<h1>Log entry</h1>
+
+@if (page == null)
+{
+	<Loading />
+}
+else
+{
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card">
+				<div class="card-body">
+
+					<div class="row">
+						<div class="col">
+							<div class="form-inline">
+								<select class="custom-select mb-2 mr-sm-2" @onchange="SelectPid_OnChange">
+									<option value="" selected>Select all PIDs</option>
+									@if (pids != null)
+									{
+										@foreach (string pid in pids)
+										{
+											<option value="@pid">@pid</option>
+										}
+									}
+								</select>
+								<select class="custom-select mb-2 mr-sm-2" @onchange="SelectMaxEntry_OnChange">
+									@foreach (int maxLogEntry in maxLogEntriess)
+									{
+										<option value="@maxLogEntry">@maxLogEntry</option>
+									}
+								</select>
+							</div>
+						</div>
+						<div class="col">
+							<button id="btnDelete" class="btn btn-sm btn-danger float-right" @onclick="BtnDelete_OnClick">Delete selection</button>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Date @Math.Ceiling(1.2f)</th>
+										<th>PID</th>
+										<th>Value</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (LogEntry logEntry in page.LogEntries)
+									{
+										<tr>
+											<td>@logEntry.Date</td>
+											<td>@logEntry.Pid</td>
+											<td>@logEntry.Value</td>
+											<td class="table-edit p-0 text-right">
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" type="checkbox" value="@logEntry.LogEntryId" @onchange="eventArgs => { CheckEntry_OnChange(logEntry.LogEntryId, eventArgs.Value); }">
+												</div>
+											</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col"></div>
+						<div class="col text-center">
+							<Pagination ItemsTotal="page.RowCount" CurrentPage="CurrentPage" MaxRows="MaxLogEntries" MaxPages="5"></Pagination>
+						</div>
+						<div class="col">
+							<button id="btnDelete" class="btn btn-sm btn-danger float-right" @onclick="BtnDelete_OnClick">Delete selection</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<CascadingValue Value="this">
+		<Delete />
+	</CascadingValue>
+
+}
+
+@code {
+
+	LogEntryViewModel page;
+	IEnumerable<string> pids;
+	int[] maxLogEntriess = new int[] { 10, 25, 50, 100, 250, 500 };
+
+	[Parameter]
+	public int CurrentPage { get; set; } = 1;
+
+	[Parameter]
+	public string CurrentPID { get; set; } = "";
+
+	[Parameter]
+	public int MaxLogEntries { get; set; } = 10;
+
+	public List<int> logIdDeleteList { get; set; }
+	public bool DisplayDeleteModal { get; set; }
+
+	protected async override Task OnInitializedAsync()
+	{
+		logIdDeleteList = new List<int>();
+		pids = await LogEntryService.GetPidsUnique();
+		await UpdateList();
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await UpdateList();
+	}
+
+	private string IsChecked(int id)
+	{
+		return logIdDeleteList.Exists(b => b == id) ? "checked" : "";
+	}
+
+	private void BtnDelete_OnClick()
+	{
+		DisplayDeleteModal = true;
+	}
+
+	public async Task UpdateList()
+	{
+		page = await LogEntryService.GetLogEntryView(CurrentPage, Convert.ToInt32(MaxLogEntries), CurrentPID);
+		StateHasChanged();
+	}
+
+	/// <summary>
+	/// Adds the checked log entry to the list of log entries that should be deleted.
+	/// </summary>
+	private void CheckEntry_OnChange(int logEntryId, object isChecked)
+	{
+
+		if ((bool)isChecked)
+		{
+			logIdDeleteList.Add(logEntryId);
+		}
+		else
+		{
+			logIdDeleteList.Remove(logEntryId);
+		}
+
+		StateHasChanged();
+
+	}
+
+	/// <summary>
+	/// Sets the current PID to display in the list.
+	/// </summary>
+	private async void SelectPid_OnChange(ChangeEventArgs eventArgs)
+	{
+		CurrentPID = await Task.FromResult(eventArgs.Value.ToString().Contains("Select all PIDs") ? "" : eventArgs.Value.ToString());
+		NavigationManager.NavigateTo("/logentries/1");
+	}
+
+	/// <summary>
+	/// Sets the max log entries to display in the list.
+	/// </summary>
+	private async void SelectMaxEntry_OnChange(ChangeEventArgs eventArgs)
+	{
+		MaxLogEntries = await Task.FromResult(Convert.ToInt32(eventArgs.Value));
+		NavigationManager.NavigateTo("/logentries/1");
+	}
+
+}

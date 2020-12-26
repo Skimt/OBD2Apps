@@ -1,0 +1,98 @@
+﻿@page "/cars"
+
+@using Management.Modals.Car
+@using Management.Models
+@using Management.Services
+@using Management.Pages.Inherited
+@inherits ManagementBase
+@inject CarService CarService
+
+<h1>Cars</h1>
+
+@if (cars == null)
+{
+	<Loading />
+}
+else
+{
+	<div class="row mb-4">
+		<div class="col">
+			<div class="card">
+				<div class="card-body">
+					<button id="btnAdd" class="btn btn-primary mb-3 float-right" @onclick="BtnAdd_OnClick"><span class="oi oi-plus"></span> New car</button>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>License plate</th>
+								<th>Brand</th>
+								<th>Model</th>
+								<th>Volume</th>
+								<th>Year</th>
+								<th>Owner</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (Car car in cars)
+							{
+							<tr>
+								<td>@car.LicensePlate</td>
+								<td>@(car.CarBrandId == null ? "N/A" : car.CarBrand.Name)</td>
+								<td>@(car.CarModelId == null ? "N/A" : car.CarModel.Name)</td>
+								<td>@car.Volume.ToString()</td>
+								<td>@car.Year?.Year.ToString()</td>
+								<td>@car.Person?.FullName</td>
+								<td class="table-edit p-0 text-right">
+									<button id="btnEdit" class="btn btn-sm btn-success" @onclick="(()=> BtnEdit_OnClick(car))"><span class="oi oi-pencil"></span></button>
+									<button id="btnDelete" class="btn btn-sm btn-danger" @onclick="(()=> BtnDelete_OnClick(car))"><span class="oi oi-trash"></span></button>
+								</td>
+							</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<CascadingValue Value="this">
+		<Add />
+		<Edit />
+		<Delete />
+	</CascadingValue>
+
+}
+
+@code {
+
+	public Car Car { get; set; }
+	IEnumerable<Car> cars;
+
+	protected override async Task OnInitializedAsync()
+	{
+		Car = new Car();
+		cars = (await CarService.GetCars()).Value;
+	}
+
+	private void BtnAdd_OnClick()
+	{
+		Car = SetMarkedAs<Car>(MarkedType.Add);
+	}
+
+	private void BtnEdit_OnClick(Car car)
+	{
+		Car = SetMarkedAs(car, MarkedType.Edit);
+	}
+
+	private void BtnDelete_OnClick(Car car)
+	{
+		Car = SetMarkedAs(car, MarkedType.Delete);
+	}
+
+	public async Task UpdateList()
+	{
+		cars = (await CarService.GetCars()).Value;
+		StateHasChanged();
+	}
+
+}

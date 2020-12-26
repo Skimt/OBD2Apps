@@ -1,0 +1,57 @@
+﻿@using Management.Data
+@using Management.Pages
+@using Management.Models
+@using Management.Services
+
+@namespace Management.Modals.Person
+
+@inject PersonService PersonService
+
+@if (Display)
+{
+	<div class="modal-backdrop">
+		<div id="modalDelete" class="modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Delete Person</h5>
+						<button type="button" class="close" @onclick="BtnAbort_OnClick">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body text-justify">
+						<p>Are you sure you want to permanently delete the selected '@PersonFullName' from the database?</p>
+						<p><i>Deleting a person might result in deleting all of the data attached to said person, such as cars and logs.</i></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-block btn-warning" @onclick="BtnConfirm_OnClick">Yes</button>
+						<button type="button" class="btn btn-block btn-secondary" @onclick="BtnAbort_OnClick">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+
+@code {
+
+	[CascadingParameter]
+	public People Page { get; set; }
+
+	public bool Display => Page.Person.Marked == MarkedType.Delete;
+	public string PersonFullName => Page.Person.GivenName + " " + Page.Person.SurName;
+
+	private async void BtnConfirm_OnClick()
+	{
+		await PersonService.DeletePerson(Page.Person.PersonId);
+		Page.Person.Marked = MarkedType.None;
+		Page.UpdateList();
+	}
+
+	private void BtnAbort_OnClick()
+	{
+		Page.Person.Marked = MarkedType.None;
+	}
+
+}
